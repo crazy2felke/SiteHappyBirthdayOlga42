@@ -46,22 +46,28 @@
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     if (!ctx) {
-      ctx = new AC();
-      master = ctx.createGain();
-      master.gain.value = 0.11;
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 2200;
-      const delay = ctx.createDelay();
-      delay.delayTime.value = 0.28;
-      const fb = ctx.createGain();
-      fb.gain.value = 0.22;
-      master.connect(filter);
-      filter.connect(delay);
-      delay.connect(fb);
-      fb.connect(delay);
-      filter.connect(ctx.destination);
-      delay.connect(ctx.destination);
+      try {
+        ctx = new AC();
+        master = ctx.createGain();
+        master.gain.value = 0.11;
+        const filter = ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.value = 2200;
+        const delay = ctx.createDelay();
+        delay.delayTime.value = 0.28;
+        const fb = ctx.createGain();
+        fb.gain.value = 0.22;
+        master.connect(filter);
+        filter.connect(delay);
+        delay.connect(fb);
+        fb.connect(delay);
+        filter.connect(ctx.destination);
+        delay.connect(ctx.destination);
+      } catch {
+        ctx = null;
+        master = null;
+        return null;
+      }
     }
     return ctx;
   }
@@ -329,7 +335,11 @@
     document.addEventListener(type, unlockFromGesture, { capture: true, passive: true });
   });
 
-  if (wanted()) startMusic();
+  try {
+    if (wanted()) startMusic();
+  } catch {
+    /* ignore */
+  }
 
   makeButton();
   setupCanvas();

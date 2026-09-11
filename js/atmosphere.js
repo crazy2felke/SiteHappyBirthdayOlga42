@@ -206,7 +206,7 @@
     syncButton();
   }
 
-  const COLORS = ["#e8c98a", "#c6a36a", "#c51e32", "#f7f1e6", "#8d3a44", "#d7b36a"];
+  const COLORS = ["#eed7a2", "#c6a36a", "#8b1e2d", "#f3ead9", "#6e1824", "#d7b36a"];
 
   function spawnParticle(extra) {
     const w = window.innerWidth;

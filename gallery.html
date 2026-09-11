@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0c0a08" />
+  <meta name="theme-color" content="#070605" />
   <title>Аватар картины · Персональная выставка</title>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body data-scene="gallery">
   <main class="page">
-    <div class="lock-screen" id="lockScreen">
+    <div class="lock-screen salon-card" id="lockScreen">
+      <span class="corner corner-tl" aria-hidden="true"></span>
+      <span class="corner corner-tr" aria-hidden="true"></span>
+      <span class="corner corner-bl" aria-hidden="true"></span>
+      <span class="corner corner-br" aria-hidden="true"></span>
       <p class="kicker">VIP · зал одной картины</p>
       <h1>Ещё закрыто</h1>
       <div class="ornament" aria-hidden="true"></div>
@@ -25,10 +29,12 @@
     </div>
 
     <div class="gallery-shell reveal" id="galleryShell" hidden>
-      <p class="kicker">VIP · зал одной картины</p>
-      <h1>Аватар полотна</h1>
-      <p class="gallery-kicker-note">Ольга · 42 года · эскиз картины</p>
-      <div class="ornament" aria-hidden="true"></div>
+      <header class="gallery-head">
+        <p class="kicker">VIP · зал одной картины</p>
+        <h1>Аватар полотна</h1>
+        <p class="gallery-kicker-note">Ольга · 42 года · эскиз картины</p>
+        <div class="ornament" aria-hidden="true"></div>
+      </header>
 
       <figure class="frame-wrap">
         <div class="portrait-stage" id="portraitStage">
@@ -42,7 +48,7 @@
         </div>
       </figure>
 
-      <div class="caption">
+      <div class="caption plaque">
         <div class="gift-row gallery-gift">
           <div class="cake" aria-hidden="true">
             <i class="flame"></i>

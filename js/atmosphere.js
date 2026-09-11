@@ -11,7 +11,7 @@
   let master;
   let musicTimer;
   let playing = false;
-  let unlocking = false;
+  let unlocked = false;
   let particles = [];
   let canvas;
   let c2d;
@@ -50,20 +50,8 @@
       try {
         ctx = new AC();
         master = ctx.createGain();
-        master.gain.value = 0.16;
-        const filter = ctx.createBiquadFilter();
-        filter.type = "lowpass";
-        filter.frequency.value = 2200;
-        const delay = ctx.createDelay();
-        delay.delayTime.value = 0.28;
-        const fb = ctx.createGain();
-        fb.gain.value = 0.22;
-        master.connect(filter);
-        filter.connect(delay);
-        delay.connect(fb);
-        fb.connect(delay);
-        filter.connect(ctx.destination);
-        delay.connect(ctx.destination);
+        master.gain.value = 0.22;
+        master.connect(ctx.destination);
       } catch {
         ctx = null;
         master = null;
@@ -138,8 +126,8 @@
   function beginLoop() {
     if (!ctx || playing || ctx.state !== "running") return;
     playing = true;
-    if (master) master.gain.setTargetAtTime(0.16, ctx.currentTime, 0.04);
-    const startAt = ctx.currentTime + 0.08;
+    if (master) master.gain.setTargetAtTime(0.22, ctx.currentTime, 0.04);
+    const startAt = ctx.currentTime + 0.02;
     schedule(startAt);
     schedule(startAt + LOOP);
     if (musicTimer) window.clearInterval(musicTimer);
@@ -149,35 +137,44 @@
     }, LOOP * 1000);
   }
 
-  function startMusic() {
-    if (!wanted() || unlocking) return;
-    unlocking = true;
+  function kickHtmlAudio() {
     try {
+      const a = new Audio(
+        "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"
+      );
+      a.volume = 0.01;
+      const p = a.play();
+      if (p && p.catch) p.catch(() => {});
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function startMusic() {
+    if (!wanted()) return;
+    unlocked = true;
+    try {
+      kickHtmlAudio();
       const audio = ensureAudio();
       if (!audio) {
-        unlocking = false;
         syncButton();
         return;
       }
       setWanted(true);
       silentKick();
       const go = () => {
-        unlocking = false;
         if (!wanted() || !ctx) return;
         if (ctx.state === "running") beginLoop();
         syncButton();
       };
-      if (audio.state === "running") {
-        go();
-      } else {
-        audio.resume().then(go).catch(() => {
-          unlocking = false;
-          syncButton();
-        });
+      const resume = audio.resume();
+      if (audio.state === "running") go();
+      if (resume && resume.then) {
+        resume.then(go).catch(() => syncButton());
       }
+      window.setTimeout(go, 60);
       syncButton();
     } catch {
-      unlocking = false;
       syncButton();
     }
   }
@@ -185,14 +182,21 @@
   function unlockFromGesture(event) {
     if (event.target && event.target.closest && event.target.closest("#musicToggle")) return;
     if (!wanted() || isLive()) return;
+    unlocked = true;
     if (ctx && ctx.state === "suspended") {
-      resetAudio();
+      playing = false;
+      try { ctx.resume(); } catch { /* ignore */ }
     }
     startMusic();
   }
 
   function stopMusic() {
     setWanted(false);
+    if (musicTimer) {
+      window.clearInterval(musicTimer);
+      musicTimer = null;
+    }
+    playing = false;
     if (ctx) ctx.suspend();
     syncButton();
   }
@@ -341,25 +345,34 @@
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
+      if (musicTimer) {
+        window.clearInterval(musicTimer);
+        musicTimer = null;
+      }
+      playing = false;
       if (ctx) ctx.suspend();
       return;
     }
-    if (wanted()) startMusic();
+    if (!wanted() || !unlocked || !ctx) return;
+    ctx.resume().then(() => {
+      if (wanted() && ctx && ctx.state === "running") {
+        if (!playing) beginLoop();
+      }
+      syncButton();
+    }).catch(() => {});
   });
 
   window.addEventListener("pageshow", () => {
-    if (wanted()) startMusic();
+    if (!wanted() || !unlocked || !ctx) return;
+    ctx.resume().then(() => {
+      if (wanted() && ctx && ctx.state === "running" && !playing) beginLoop();
+      syncButton();
+    }).catch(() => {});
   });
 
-  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((type) => {
+  ["pointerdown", "touchstart", "click", "keydown"].forEach((type) => {
     document.addEventListener(type, unlockFromGesture, { capture: true, passive: true });
   });
-
-  try {
-    if (wanted()) startMusic();
-  } catch {
-    /* ignore */
-  }
 
   makeButton();
   setupCanvas();

@@ -11,6 +11,7 @@
   let master;
   let musicTimer;
   let playing = false;
+  let unlocking = false;
   let particles = [];
   let canvas;
   let c2d;
@@ -49,7 +50,7 @@
       try {
         ctx = new AC();
         master = ctx.createGain();
-        master.gain.value = 0.11;
+        master.gain.value = 0.16;
         const filter = ctx.createBiquadFilter();
         filter.type = "lowpass";
         filter.frequency.value = 2200;
@@ -85,17 +86,21 @@
 
   function tone(time, freq, dur, type, gainVal) {
     if (!ctx || !master) return;
-    const osc = ctx.createOscillator();
-    const amp = ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, time);
-    amp.gain.setValueAtTime(0.0001, time);
-    amp.gain.exponentialRampToValueAtTime(gainVal, time + 0.03);
-    amp.gain.exponentialRampToValueAtTime(0.0001, time + dur);
-    osc.connect(amp);
-    amp.connect(master);
-    osc.start(time);
-    osc.stop(time + dur + 0.05);
+    try {
+      const osc = ctx.createOscillator();
+      const amp = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, time);
+      amp.gain.setValueAtTime(0.0001, time);
+      amp.gain.exponentialRampToValueAtTime(gainVal, time + 0.03);
+      amp.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+      osc.connect(amp);
+      amp.connect(master);
+      osc.start(time);
+      osc.stop(time + dur + 0.05);
+    } catch {
+      /* Safari may reject a ramp if the clock already passed */
+    }
   }
 
   const MELODY = [
@@ -133,7 +138,7 @@
   function beginLoop() {
     if (!ctx || playing || ctx.state !== "running") return;
     playing = true;
-    if (master) master.gain.setTargetAtTime(0.11, ctx.currentTime, 0.04);
+    if (master) master.gain.setTargetAtTime(0.16, ctx.currentTime, 0.04);
     const startAt = ctx.currentTime + 0.08;
     schedule(startAt);
     schedule(startAt + LOOP);
@@ -146,21 +151,35 @@
 
   function startMusic() {
     if (!wanted() || unlocking) return;
-    const audio = ensureAudio();
-    if (!audio) return;
-    setWanted(true);
     unlocking = true;
-    silentKick();
-    audio.resume().then(() => {
-      unlocking = false;
-      if (!wanted() || !ctx) return;
-      if (ctx.state === "running") beginLoop();
+    try {
+      const audio = ensureAudio();
+      if (!audio) {
+        unlocking = false;
+        syncButton();
+        return;
+      }
+      setWanted(true);
+      silentKick();
+      const go = () => {
+        unlocking = false;
+        if (!wanted() || !ctx) return;
+        if (ctx.state === "running") beginLoop();
+        syncButton();
+      };
+      if (audio.state === "running") {
+        go();
+      } else {
+        audio.resume().then(go).catch(() => {
+          unlocking = false;
+          syncButton();
+        });
+      }
       syncButton();
-    }).catch(() => {
+    } catch {
       unlocking = false;
       syncButton();
-    });
-    syncButton();
+    }
   }
 
   function unlockFromGesture(event) {

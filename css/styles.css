@@ -925,7 +925,7 @@ body.is-complete .board-card {
 
 @keyframes crystal-in {
   from { opacity: 0; }
-  to { opacity: 0.48; }
+  to { opacity: 1; }
 }
 
 .caption {
@@ -1056,6 +1056,7 @@ body[data-scene="assemble"] .balloon {
   text-transform: uppercase;
   padding: 10px 14px;
   cursor: pointer;
+  touch-action: manipulation;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1190,7 +1191,7 @@ body[data-scene="assemble"] .balloon {
   }
 
   .portrait-stage.is-crystal .portrait-mosaic {
-    opacity: 0.4;
+    opacity: 1;
   }
 
   .btn,

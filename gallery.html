@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0a08" />
+  <title>Аватар картины · Персональная выставка</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-scene="gallery">
+  <main class="page">
+    <div class="lock-screen" id="lockScreen" hidden>
+      <p class="kicker">Зал одной картины</p>
+      <h1>Ещё закрыто</h1>
+      <div class="ornament" aria-hidden="true"></div>
+      <p>
+        Сначала соберите последний сегмент. Пока фрагмент не на месте,
+        эскиз полотна остаётся за дверью зала.
+      </p>
+      <a class="btn" href="assemble.html">К сборке</a>
+    </div>
+
+    <div class="gallery-shell reveal" id="galleryShell">
+      <p class="kicker">Зал одной картины</p>
+      <h1>Аватар полотна</h1>
+      <p class="gallery-kicker-note">Ольга · 42 года · эскиз картины</p>
+      <div class="ornament" aria-hidden="true"></div>
+
+      <figure class="frame-wrap">
+        <img
+          class="portrait"
+          src="img/portrait.jpg"
+          alt="Ольга — эскиз алмазной картины, подаренной семьёй к 42-летию"
+        />
+      </figure>
+
+      <div class="caption">
+        <div class="gift-row gallery-gift" aria-hidden="true">
+          <div class="cake">
+            <i class="flame"></i>
+            <i class="candle"></i>
+            <i class="tier top"></i>
+            <i class="tier mid"></i>
+            <i class="tier base"></i>
+            <i class="plate"></i>
+          </div>
+        </div>
+        <p>
+          Ольга, скоро вы увидите её живую — в алмазах, в полный рост света.
+          Сейчас перед вами эскиз: тот самый взгляд, который семья переносила на полотно.
+        </p>
+        <p>
+          Представьте каждую грань. Представьте, как это будет сиять, когда 19 сентября
+          вы снимете заклейку и поставите последнюю стразу на место.
+        </p>
+        <p class="sign">С днём рождения, Ольга.<br />8 сентября вам исполнилось 42.<br />С любовью — ваша семья.</p>
+      </div>
+
+      <a class="btn" href="index.html">Вернуться</a>
+    </div>
+  </main>
+  <script src="js/gallery.js"></script>
+  <script src="js/atmosphere.js"></script>
+</body>
+</html>

@@ -19,8 +19,6 @@ const GRID = [
 
 const STORAGE_KEY = "diamond-last-segment";
 const COMPLETE_KEY = "diamond-segment-complete";
-const DOUBLE_TAP_MIN_MS = 90;
-const DOUBLE_TAP_MAX_MS = 750;
 const TOTAL = GRID.flat().filter(Boolean).length;
 const VALID_IDS = new Set(
   GRID.flatMap((row, r) => row.flatMap((cell, c) => (cell ? [`${r}-${c}`] : [])))
@@ -57,7 +55,6 @@ function savePlaced(placed) {
 }
 
 const placed = loadPlaced();
-let lastTap = null;
 
 try {
   localStorage.removeItem(COMPLETE_KEY);
@@ -67,10 +64,6 @@ try {
 
 function key(r, c) {
   return `${r}-${c}`;
-}
-
-function cellButton(r, c) {
-  return chart.querySelector(`button.cell[data-row="${r + 1}"][data-col="${c + 1}"]`);
 }
 
 function setPlacedVisual(button, on) {
@@ -92,60 +85,21 @@ function updateStatus() {
   } else if (count === 0) {
     hintEl.textContent = "Коснитесь ячейки, чтобы положить стразу.";
   } else {
-    hintEl.textContent = `Осталось ${TOTAL - count}. Двойное нажатие снимает стразы слева в строке.`;
-  }
-}
-
-function setCellPlaced(r, c, button, on) {
-  const id = key(r, c);
-  if (on) {
-    placed.add(id);
-    setPlacedVisual(button, true);
-  } else {
-    placed.delete(id);
-    setPlacedVisual(button, false);
+    hintEl.textContent = `Осталось ${TOTAL - count}. Поля с крестиком не заполняются.`;
   }
 }
 
 function toggleCell(r, c, button) {
-  setCellPlaced(r, c, button, !placed.has(key(r, c)));
+  const id = key(r, c);
+  if (placed.has(id)) {
+    placed.delete(id);
+    setPlacedVisual(button, false);
+  } else {
+    placed.add(id);
+    setPlacedVisual(button, true);
+  }
   savePlaced(placed);
   updateStatus();
-}
-
-function clearPreviousInRow(r, currentC) {
-  let changed = false;
-  GRID[r].forEach((cell, c) => {
-    if (!cell || c >= currentC) return;
-    const id = key(r, c);
-    if (!placed.has(id)) return;
-    placed.delete(id);
-    setPlacedVisual(cellButton(r, c), false);
-    changed = true;
-  });
-  if (changed) {
-    savePlaced(placed);
-    updateStatus();
-  }
-}
-
-function onCellTap(r, c, button) {
-  const now = Date.now();
-  if (lastTap && lastTap.r === r && lastTap.c === c) {
-    const dt = now - lastTap.time;
-    if (dt < DOUBLE_TAP_MIN_MS) return;
-    if (dt <= DOUBLE_TAP_MAX_MS) {
-      lastTap = null;
-      setCellPlaced(r, c, button, true);
-      clearPreviousInRow(r, c);
-      savePlaced(placed);
-      updateStatus();
-      return;
-    }
-  }
-
-  lastTap = { r, c, time: now };
-  toggleCell(r, c, button);
 }
 
 function render() {
@@ -252,7 +206,7 @@ chart.addEventListener("click", (event) => {
   const r = Number(btn.dataset.row) - 1;
   const c = Number(btn.dataset.col) - 1;
   if (!Number.isInteger(r) || !Number.isInteger(c)) return;
-  onCellTap(r, c, btn);
+  toggleCell(r, c, btn);
 });
 
 render();

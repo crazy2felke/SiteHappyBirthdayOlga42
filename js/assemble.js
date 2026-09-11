@@ -19,7 +19,7 @@ const GRID = [
 
 const STORAGE_KEY = "diamond-last-segment";
 const COMPLETE_KEY = "diamond-segment-complete";
-const DOUBLE_TAP_MS = 450;
+const DOUBLE_TAP_MS = 700;
 const TOTAL = GRID.flat().filter(Boolean).length;
 const VALID_IDS = new Set(
   GRID.flatMap((row, r) => row.flatMap((cell, c) => (cell ? [`${r}-${c}`] : [])))
@@ -95,15 +95,19 @@ function updateStatus() {
   }
 }
 
-function toggleCell(r, c, button) {
+function setCellPlaced(r, c, button, on) {
   const id = key(r, c);
-  if (placed.has(id)) {
-    placed.delete(id);
-    setPlacedVisual(button, false);
-  } else {
+  if (on) {
     placed.add(id);
     setPlacedVisual(button, true);
+  } else {
+    placed.delete(id);
+    setPlacedVisual(button, false);
   }
+}
+
+function toggleCell(r, c, button) {
+  setCellPlaced(r, c, button, !placed.has(key(r, c)));
   savePlaced(placed);
   updateStatus();
 }
@@ -134,8 +138,10 @@ function onCellTap(r, c, button) {
 
   if (isDouble) {
     lastTap = null;
-    toggleCell(r, c, button);
+    setCellPlaced(r, c, button, true);
     clearPreviousInRow(r, c);
+    savePlaced(placed);
+    updateStatus();
     return;
   }
 
@@ -188,7 +194,22 @@ function render() {
         `Строка ${r + 1}, столбец ${c + 1}, цвет ${cell.c}, количество ${cell.n}`
       );
       btn.innerHTML = `<span class="code">${cell.c}</span><sup>${cell.n}</sup><span class="gem" aria-hidden="true"></span>`;
-      btn.addEventListener("click", () => onCellTap(r, c, btn));
+      let ignoreClick = false;
+      btn.addEventListener("pointerup", (event) => {
+        if (typeof event.button === "number" && event.button !== 0) return;
+        ignoreClick = true;
+        window.setTimeout(() => {
+          ignoreClick = false;
+        }, 500);
+        onCellTap(r, c, btn);
+      });
+      btn.addEventListener("click", (event) => {
+        if (ignoreClick) {
+          event.preventDefault();
+          return;
+        }
+        onCellTap(r, c, btn);
+      });
       chart.appendChild(btn);
     });
 

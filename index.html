@@ -91,18 +91,12 @@
             <p class="gift-wish">С днём рождения, Ольга.<br />Пусть вечер будет тихим и светлым.</p>
           </div>
           <a class="btn" id="startBtn" href="assemble.html">Начать сборку</a>
-          <a class="btn btn-ghost" id="hallLink" href="gallery.html" hidden>В зал картины</a>
         </div>
       </article>
     </div>
   </main>
   <script>
-    if (localStorage.getItem("diamond-segment-complete") === "1") {
-      const hall = document.getElementById("hallLink");
-      const start = document.getElementById("startBtn");
-      hall.hidden = false;
-      start.textContent = "К схеме сегмента";
-    }
+    try { localStorage.removeItem("diamond-segment-complete"); } catch (e) {}
   </script>
   <script src="js/atmosphere.js"></script>
 </body>

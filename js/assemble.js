@@ -18,6 +18,8 @@ const GRID = [
 ];
 
 const STORAGE_KEY = "diamond-last-segment";
+const COMPLETE_KEY = "diamond-segment-complete";
+const DOUBLE_TAP_MS = 450;
 const TOTAL = GRID.flat().filter(Boolean).length;
 const VALID_IDS = new Set(
   GRID.flatMap((row, r) => row.flatMap((cell, c) => (cell ? [`${r}-${c}`] : [])))
@@ -44,9 +46,26 @@ function savePlaced(placed) {
 }
 
 const placed = loadPlaced();
+let lastTap = null;
+
+try {
+  localStorage.removeItem(COMPLETE_KEY);
+} catch {
+  /* ignore */
+}
 
 function key(r, c) {
   return `${r}-${c}`;
+}
+
+function cellButton(r, c) {
+  return chart.querySelector(`button.cell[data-row="${r + 1}"][data-col="${c + 1}"]`);
+}
+
+function setPlacedVisual(button, on) {
+  if (!button) return;
+  button.classList.toggle("placed", on);
+  button.setAttribute("aria-pressed", String(on));
 }
 
 function updateStatus() {
@@ -62,7 +81,7 @@ function updateStatus() {
   } else if (count === 0) {
     hintEl.textContent = "Коснитесь ячейки, чтобы положить стразу.";
   } else {
-    hintEl.textContent = `Осталось ${TOTAL - count}. Поля с крестиком не заполняются.`;
+    hintEl.textContent = `Осталось ${TOTAL - count}. Двойное нажатие снимает стразы слева в строке.`;
   }
 }
 
@@ -70,15 +89,48 @@ function toggleCell(r, c, button) {
   const id = key(r, c);
   if (placed.has(id)) {
     placed.delete(id);
-    button.classList.remove("placed");
-    button.setAttribute("aria-pressed", "false");
+    setPlacedVisual(button, false);
   } else {
     placed.add(id);
-    button.classList.add("placed");
-    button.setAttribute("aria-pressed", "true");
+    setPlacedVisual(button, true);
   }
   savePlaced(placed);
   updateStatus();
+}
+
+function clearPreviousInRow(r, currentC) {
+  let changed = false;
+  GRID[r].forEach((cell, c) => {
+    if (!cell || c >= currentC) return;
+    const id = key(r, c);
+    if (!placed.has(id)) return;
+    placed.delete(id);
+    setPlacedVisual(cellButton(r, c), false);
+    changed = true;
+  });
+  if (changed) {
+    savePlaced(placed);
+    updateStatus();
+  }
+}
+
+function onCellTap(r, c, button) {
+  const now = Date.now();
+  const isDouble =
+    lastTap &&
+    lastTap.r === r &&
+    lastTap.c === c &&
+    now - lastTap.time <= DOUBLE_TAP_MS;
+
+  if (isDouble) {
+    lastTap = null;
+    toggleCell(r, c, button);
+    clearPreviousInRow(r, c);
+    return;
+  }
+
+  lastTap = { r, c, time: now };
+  toggleCell(r, c, button);
 }
 
 function render() {
@@ -126,7 +178,7 @@ function render() {
         `Строка ${r + 1}, столбец ${c + 1}, цвет ${cell.c}, количество ${cell.n}`
       );
       btn.innerHTML = `<span class="code">${cell.c}</span><sup>${cell.n}</sup><span class="gem" aria-hidden="true"></span>`;
-      btn.addEventListener("click", () => toggleCell(r, c, btn));
+      btn.addEventListener("click", () => onCellTap(r, c, btn));
       chart.appendChild(btn);
     });
 
@@ -160,7 +212,12 @@ finishBtn.addEventListener("click", (event) => {
     );
     return;
   }
-  localStorage.setItem("diamond-segment-complete", "1");
+  sessionStorage.setItem(COMPLETE_KEY, "1");
+  try {
+    localStorage.removeItem(COMPLETE_KEY);
+  } catch {
+    /* ignore */
+  }
   if (window.DiamondParty) window.DiamondParty.burst();
   if (veil) {
     veil.hidden = false;

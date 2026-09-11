@@ -287,7 +287,7 @@
   balloons();
 
   if (scene === "gallery" && !document.body.classList.contains("is-locked")) {
-    window.setTimeout(() => burst(), 500);
+    window.setTimeout(() => burst(), 2400);
   }
 
   window.DiamondParty = { burst, startMusic, toggleMusic };

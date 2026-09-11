@@ -46,22 +46,28 @@
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     if (!ctx) {
-      ctx = new AC();
-      master = ctx.createGain();
-      master.gain.value = 0.11;
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 2200;
-      const delay = ctx.createDelay();
-      delay.delayTime.value = 0.28;
-      const fb = ctx.createGain();
-      fb.gain.value = 0.22;
-      master.connect(filter);
-      filter.connect(delay);
-      delay.connect(fb);
-      fb.connect(delay);
-      filter.connect(ctx.destination);
-      delay.connect(ctx.destination);
+      try {
+        ctx = new AC();
+        master = ctx.createGain();
+        master.gain.value = 0.11;
+        const filter = ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.value = 2200;
+        const delay = ctx.createDelay();
+        delay.delayTime.value = 0.28;
+        const fb = ctx.createGain();
+        fb.gain.value = 0.22;
+        master.connect(filter);
+        filter.connect(delay);
+        delay.connect(fb);
+        fb.connect(delay);
+        filter.connect(ctx.destination);
+        delay.connect(ctx.destination);
+      } catch {
+        ctx = null;
+        master = null;
+        return null;
+      }
     }
     return ctx;
   }
@@ -206,7 +212,7 @@
     syncButton();
   }
 
-  const COLORS = ["#e8c98a", "#c6a36a", "#c51e32", "#f7f1e6", "#8d3a44", "#d7b36a"];
+  const COLORS = ["#eed7a2", "#c6a36a", "#8b1e2d", "#f3ead9", "#6e1824", "#d7b36a"];
 
   function spawnParticle(extra) {
     const w = window.innerWidth;
@@ -306,7 +312,7 @@
       b.style.setProperty("--balloon", color);
       b.style.setProperty("--drift", `${6 + (i % 5) * 2}s`);
       b.style.setProperty("--delay", `${-i * 1.4}s`);
-      b.style.setProperty("--x", side === "left" ? `${2 + (i % 4) * 4}vw` : `${2 + (i % 4) * 4}vw`);
+      b.style.setProperty("--x", side === "left" ? `${1 + (i % 3) * 2.2}vw` : `${1 + (i % 3) * 2.2}vw`);
       b.style.setProperty("--s", `${0.72 + (i % 3) * 0.12}`);
       layer.appendChild(b);
     }
@@ -329,7 +335,11 @@
     document.addEventListener(type, unlockFromGesture, { capture: true, passive: true });
   });
 
-  if (wanted()) startMusic();
+  try {
+    if (wanted()) startMusic();
+  } catch {
+    /* ignore */
+  }
 
   makeButton();
   setupCanvas();

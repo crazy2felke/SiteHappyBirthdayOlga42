@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0c0a08" />
+  <meta name="theme-color" content="#070605" />
   <meta name="description" content="Лимитированный VIP-билет Ольги на персональную выставку одной картины. 42 года." />
   <title>VIP-билет · Ольга · 42</title>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body data-scene="invite">
   <main class="page">
     <div class="invite-wrap">
       <article class="ticket">
+        <span class="corner corner-tl" aria-hidden="true"></span>
+        <span class="corner corner-tr" aria-hidden="true"></span>
+        <span class="corner corner-bl" aria-hidden="true"></span>
+        <span class="corner corner-br" aria-hidden="true"></span>
         <p class="ticket-watermark" aria-hidden="true">VIP</p>
+
         <header class="ticket-head">
           <div class="vip-brand">
             <p class="kicker vip-kicker">Только VIP</p>
@@ -24,6 +29,12 @@
           </div>
           <p class="ticket-no">Билет № 01<br />действует с 11 сентября</p>
         </header>
+
+        <div class="ticket-crest" aria-hidden="true">
+          <span class="crest-rule"></span>
+          <span class="monogram">О</span>
+          <span class="crest-rule"></span>
+        </div>
 
         <p class="vip-mark">VIP</p>
         <p class="limited-line">лимитированный билет · один гость</p>
@@ -66,8 +77,6 @@
           </p>
         </div>
 
-        <div class="ticket-perf" aria-hidden="true"></div>
-
         <div class="sealed">
           <div class="canvas-preview" aria-hidden="true">
             <div class="film"></div>
@@ -91,6 +100,12 @@
             <p class="gift-wish">С днём рождения, Ольга.<br />Пусть вечер будет тихим и светлым.</p>
           </div>
           <a class="btn" id="startBtn" href="assemble.html">Начать сборку</a>
+        </div>
+
+        <div class="ticket-stub" aria-hidden="true">
+          <span>Один гость</span>
+          <span>Ольга · 42</span>
+          <span>№ 01</span>
         </div>
       </article>
     </div>

@@ -310,10 +310,11 @@
       const color = COLORS[i % COLORS.length];
       b.className = `balloon balloon-${side}`;
       b.style.setProperty("--balloon", color);
-      b.style.setProperty("--drift", `${6 + (i % 5) * 2}s`);
-      b.style.setProperty("--delay", `${-i * 1.4}s`);
+      b.style.setProperty("--drift", `${12 + (i % 5) * 3}s`);
+      b.style.setProperty("--delay", `${-i * 2.6}s`);
       b.style.setProperty("--x", side === "left" ? `${1 + (i % 3) * 2.2}vw` : `${1 + (i % 3) * 2.2}vw`);
       b.style.setProperty("--s", `${0.72 + (i % 3) * 0.12}`);
+      b.style.setProperty("--sway", `${(i % 2 === 0 ? 1 : -1) * (10 + (i % 4) * 8)}px`);
       layer.appendChild(b);
     }
     document.body.appendChild(layer);

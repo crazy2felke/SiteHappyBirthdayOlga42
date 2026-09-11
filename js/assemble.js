@@ -19,7 +19,8 @@ const GRID = [
 
 const STORAGE_KEY = "diamond-last-segment";
 const COMPLETE_KEY = "diamond-segment-complete";
-const DOUBLE_TAP_MS = 700;
+const DOUBLE_TAP_MIN_MS = 90;
+const DOUBLE_TAP_MAX_MS = 750;
 const TOTAL = GRID.flat().filter(Boolean).length;
 const VALID_IDS = new Set(
   GRID.flatMap((row, r) => row.flatMap((cell, c) => (cell ? [`${r}-${c}`] : [])))
@@ -130,19 +131,17 @@ function clearPreviousInRow(r, currentC) {
 
 function onCellTap(r, c, button) {
   const now = Date.now();
-  const isDouble =
-    lastTap &&
-    lastTap.r === r &&
-    lastTap.c === c &&
-    now - lastTap.time <= DOUBLE_TAP_MS;
-
-  if (isDouble) {
-    lastTap = null;
-    setCellPlaced(r, c, button, true);
-    clearPreviousInRow(r, c);
-    savePlaced(placed);
-    updateStatus();
-    return;
+  if (lastTap && lastTap.r === r && lastTap.c === c) {
+    const dt = now - lastTap.time;
+    if (dt < DOUBLE_TAP_MIN_MS) return;
+    if (dt <= DOUBLE_TAP_MAX_MS) {
+      lastTap = null;
+      setCellPlaced(r, c, button, true);
+      clearPreviousInRow(r, c);
+      savePlaced(placed);
+      updateStatus();
+      return;
+    }
   }
 
   lastTap = { r, c, time: now };
@@ -194,22 +193,6 @@ function render() {
         `Строка ${r + 1}, столбец ${c + 1}, цвет ${cell.c}, количество ${cell.n}`
       );
       btn.innerHTML = `<span class="code">${cell.c}</span><sup>${cell.n}</sup><span class="gem" aria-hidden="true"></span>`;
-      let ignoreClick = false;
-      btn.addEventListener("pointerup", (event) => {
-        if (typeof event.button === "number" && event.button !== 0) return;
-        ignoreClick = true;
-        window.setTimeout(() => {
-          ignoreClick = false;
-        }, 500);
-        onCellTap(r, c, btn);
-      });
-      btn.addEventListener("click", (event) => {
-        if (ignoreClick) {
-          event.preventDefault();
-          return;
-        }
-        onCellTap(r, c, btn);
-      });
       chart.appendChild(btn);
     });
 
@@ -261,6 +244,15 @@ finishBtn.addEventListener("click", (event) => {
     return;
   }
   window.location.href = "gallery.html";
+});
+
+chart.addEventListener("click", (event) => {
+  const btn = event.target.closest("button.cell.placeable");
+  if (!btn || !chart.contains(btn)) return;
+  const r = Number(btn.dataset.row) - 1;
+  const c = Number(btn.dataset.col) - 1;
+  if (!Number.isInteger(r) || !Number.isInteger(c)) return;
+  onCellTap(r, c, btn);
 });
 
 render();

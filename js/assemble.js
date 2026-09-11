@@ -33,7 +33,12 @@ const veil = document.getElementById("veil");
 
 function loadPlaced() {
   try {
-    const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* ignore */
+  }
+  try {
+    const raw = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
     const ids = Array.isArray(raw) ? raw.filter((id) => VALID_IDS.has(id)) : [];
     return new Set(ids);
   } catch {
@@ -42,7 +47,12 @@ function loadPlaced() {
 }
 
 function savePlaced(placed) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...placed]));
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify([...placed]));
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* ignore */
+  }
 }
 
 const placed = loadPlaced();

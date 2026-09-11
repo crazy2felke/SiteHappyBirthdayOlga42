@@ -25,6 +25,23 @@
     localStorage.setItem(WANT_KEY, on ? "1" : "0");
   }
 
+  function isLive() {
+    return Boolean(wanted() && ctx && ctx.state === "running" && playing);
+  }
+
+  function resetAudio() {
+    if (musicTimer) {
+      window.clearInterval(musicTimer);
+      musicTimer = null;
+    }
+    playing = false;
+    if (ctx) {
+      try { ctx.close(); } catch (err) { /* ignore */ }
+    }
+    ctx = null;
+    master = null;
+  }
+
   function ensureAudio() {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
@@ -47,6 +64,17 @@
       delay.connect(ctx.destination);
     }
     return ctx;
+  }
+
+  function silentKick() {
+    if (!ctx) return;
+    try {
+      const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+    } catch (err) { /* ignore */ }
   }
 
   function tone(time, freq, dur, type, gainVal) {
@@ -96,27 +124,46 @@
     });
   }
 
+  function beginLoop() {
+    if (!ctx || playing || ctx.state !== "running") return;
+    playing = true;
+    if (master) master.gain.setTargetAtTime(0.11, ctx.currentTime, 0.04);
+    const startAt = ctx.currentTime + 0.08;
+    schedule(startAt);
+    schedule(startAt + LOOP);
+    if (musicTimer) window.clearInterval(musicTimer);
+    musicTimer = window.setInterval(() => {
+      if (!ctx || ctx.state === "suspended") return;
+      schedule(ctx.currentTime + LOOP);
+    }, LOOP * 1000);
+  }
+
   function startMusic() {
-    if (!wanted()) return;
+    if (!wanted() || unlocking) return;
     const audio = ensureAudio();
     if (!audio) return;
     setWanted(true);
+    unlocking = true;
+    silentKick();
     audio.resume().then(() => {
-      if (master) master.gain.setTargetAtTime(0.11, audio.currentTime, 0.04);
-      if (!playing) {
-        playing = true;
-        const startAt = audio.currentTime + 0.08;
-        schedule(startAt);
-        schedule(startAt + LOOP);
-        musicTimer = window.setInterval(() => {
-          if (!ctx) return;
-          if (ctx.state === "suspended") return;
-          schedule(ctx.currentTime + LOOP);
-        }, LOOP * 1000);
-      }
+      unlocking = false;
+      if (!wanted() || !ctx) return;
+      if (ctx.state === "running") beginLoop();
       syncButton();
-    }).catch(() => syncButton());
+    }).catch(() => {
+      unlocking = false;
+      syncButton();
+    });
     syncButton();
+  }
+
+  function unlockFromGesture(event) {
+    if (event.target && event.target.closest && event.target.closest("#musicToggle")) return;
+    if (!wanted() || isLive()) return;
+    if (ctx && ctx.state === "suspended") {
+      resetAudio();
+    }
+    startMusic();
   }
 
   function stopMusic() {
@@ -267,18 +314,20 @@
   }
 
   document.addEventListener("visibilitychange", () => {
-    if (!ctx) return;
-    if (document.hidden) ctx.suspend();
-    else if (wanted() && playing) ctx.resume();
+    if (document.hidden) {
+      if (ctx) ctx.suspend();
+      return;
+    }
+    if (wanted()) startMusic();
   });
 
-  document.addEventListener(
-    "pointerdown",
-    () => {
-      if (wanted()) startMusic();
-    },
-    { once: true }
-  );
+  window.addEventListener("pageshow", () => {
+    if (wanted()) startMusic();
+  });
+
+  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((type) => {
+    document.addEventListener(type, unlockFromGesture, { capture: true, passive: true });
+  });
 
   if (wanted()) startMusic();
 

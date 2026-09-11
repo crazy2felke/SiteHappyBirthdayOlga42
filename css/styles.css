@@ -170,12 +170,78 @@ h2 {
 .ticket {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(198, 163, 106, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(198, 163, 106, 0.16), transparent 22%),
     var(--bg-soft);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  border: 1px solid var(--gold);
+  box-shadow: var(--shadow), var(--gold-glow);
   padding: 42px 36px 36px;
   overflow: hidden;
+}
+
+.ticket-watermark {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  margin: 0;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  font-family: var(--serif);
+  font-size: clamp(120px, 28vw, 220px);
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  opacity: 0.07;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  z-index: 0;
+}
+
+.ticket > *:not(.ticket-watermark) {
+  position: relative;
+  z-index: 1;
+}
+
+.vip-brand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.vip-kicker {
+  font-size: 12px;
+  letter-spacing: 0.48em;
+}
+
+.limited-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--gold);
+  background: linear-gradient(180deg, rgba(232, 201, 138, 0.22), rgba(198, 163, 106, 0.08));
+  color: var(--gold-bright);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 6px 10px 5px;
+}
+
+.vip-mark {
+  margin: 4px 0 2px;
+  font-family: var(--serif);
+  font-size: clamp(52px, 14vw, 92px);
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  line-height: 0.9;
+  color: var(--gold-bright);
+  text-shadow: 0 0 28px rgba(198, 163, 106, 0.45);
+}
+
+.limited-line {
+  margin: 0 0 18px;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
 .ticket::before,
@@ -644,6 +710,11 @@ body.is-complete .board-card {
   pointer-events: none;
 }
 
+.portrait-stage {
+  position: relative;
+  overflow: hidden;
+}
+
 .portrait {
   display: block;
   width: 100%;
@@ -654,13 +725,31 @@ body.is-complete .board-card {
   filter: contrast(1.02) saturate(1.04);
 }
 
+.portrait-mosaic {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portrait-stage.is-crystal .portrait-mosaic {
+  animation: crystal-in 2.8s ease forwards;
+}
+
 .reveal .portrait {
-  animation: unveil 1.6s ease both;
+  animation: unveil 2.4s ease both;
 }
 
 @keyframes unveil {
-  from { opacity: 0; transform: scale(1.04); filter: blur(8px) brightness(0.7); }
-  to { opacity: 1; transform: scale(1); filter: contrast(1.02) saturate(1.04); }
+  from { opacity: 0.55; transform: scale(1.06); filter: blur(24px) brightness(0.55) saturate(0.65); }
+  to { opacity: 1; transform: scale(1); filter: contrast(1.02) saturate(1.04) blur(0); }
+}
+
+@keyframes crystal-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .caption {
@@ -784,7 +873,8 @@ body[data-scene="assemble"] .balloon {
   margin: 0 0 18px;
 }
 
-.gift-dates {
+.gift-dates,
+.gift-wish {
   margin: 0;
   text-align: left;
   font-family: var(--serif);
@@ -792,6 +882,11 @@ body[data-scene="assemble"] .balloon {
   font-size: 15px;
   color: var(--gold-bright);
   line-height: 1.45;
+}
+
+.assemble-gift {
+  margin: 0 0 8px;
+  width: min(520px, 100%);
 }
 
 .cake {
@@ -869,12 +964,17 @@ body[data-scene="assemble"] .balloon {
 @media (prefers-reduced-motion: reduce) {
   .cell.placed .gem,
   .reveal .portrait,
+  .portrait-stage.is-crystal .portrait-mosaic,
   .veil,
   .balloon,
   .cake .flame,
   .music-toggle.is-waiting {
     animation: none;
     transition: none;
+  }
+
+  .portrait-stage.is-crystal .portrait-mosaic {
+    opacity: 1;
   }
 
   .btn,
@@ -894,6 +994,10 @@ body[data-scene="assemble"] .balloon {
 
   .ticket-no {
     text-align: left;
+  }
+
+  .vip-mark {
+    letter-spacing: 0.18em;
   }
 
   .ticket-meta {

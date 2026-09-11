@@ -14,7 +14,7 @@
 <body data-scene="gallery">
   <main class="page">
     <div class="lock-screen" id="lockScreen" hidden>
-      <p class="kicker">Зал одной картины</p>
+      <p class="kicker">VIP · зал одной картины</p>
       <h1>Ещё закрыто</h1>
       <div class="ornament" aria-hidden="true"></div>
       <p>
@@ -25,22 +25,26 @@
     </div>
 
     <div class="gallery-shell reveal" id="galleryShell">
-      <p class="kicker">Зал одной картины</p>
+      <p class="kicker">VIP · зал одной картины</p>
       <h1>Аватар полотна</h1>
       <p class="gallery-kicker-note">Ольга · 42 года · эскиз картины</p>
       <div class="ornament" aria-hidden="true"></div>
 
       <figure class="frame-wrap">
-        <img
-          class="portrait"
-          src="img/portrait.jpg"
-          alt="Ольга — эскиз алмазной картины, подаренной семьёй к 42-летию"
-        />
+        <div class="portrait-stage" id="portraitStage">
+          <img
+            class="portrait"
+            id="portrait"
+            src="img/portrait.jpg"
+            alt="Ольга — эскиз алмазной картины, подаренной семьёй к 42-летию"
+          />
+          <canvas class="portrait-mosaic" id="mosaic" aria-hidden="true"></canvas>
+        </div>
       </figure>
 
       <div class="caption">
-        <div class="gift-row gallery-gift" aria-hidden="true">
-          <div class="cake">
+        <div class="gift-row gallery-gift">
+          <div class="cake" aria-hidden="true">
             <i class="flame"></i>
             <i class="candle"></i>
             <i class="tier top"></i>
@@ -48,13 +52,14 @@
             <i class="tier base"></i>
             <i class="plate"></i>
           </div>
+          <p class="gift-wish">Пусть взгляд заиграет гранями.<br />Счастья, света и тихой радости вам.</p>
         </div>
         <p>
           Ольга, скоро вы увидите её живую — в алмазах, в полный рост света.
           Сейчас перед вами эскиз: тот самый взгляд, который семья переносила на полотно.
         </p>
         <p>
-          Представьте каждую грань. Представьте, как это будет сиять, когда 19 сентября
+          Представьте каждую грань. Представьте, как это будет сиять, когда
           вы снимете заклейку и поставите последнюю стразу на место.
         </p>
         <p class="sign">С днём рождения, Ольга.<br />8 сентября вам исполнилось 42.<br />С любовью — ваша семья.</p>

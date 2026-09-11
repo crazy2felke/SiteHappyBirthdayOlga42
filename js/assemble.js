@@ -153,7 +153,7 @@ function render() {
 finishBtn.addEventListener("click", (event) => {
   event.preventDefault();
   if (placed.size !== TOTAL) {
-    hintEl.textContent = "Сначала соберите все 25 ячеек сегмента — это ваш жест в общей работе семьи.";
+    hintEl.textContent = "Сначала соберите все 25 ячеек сегмента.";
     finishBtn.animate(
       [{ transform: "translateX(0)" }, { transform: "translateX(-6px)" }, { transform: "translateX(6px)" }, { transform: "translateX(0)" }],
       { duration: 280, easing: "ease-in-out" }

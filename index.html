@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0a08" />
+  <meta name="description" content="VIP-билет Ольги на персональную выставку одной картины. 84 года. 8 сентября — день рождения, 19 сентября — вручение." />
+  <title>VIP-билет · Ольга · 84</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-scene="invite">
+  <main class="page">
+    <div class="invite-wrap">
+      <article class="ticket">
+        <header class="ticket-head">
+          <p class="kicker">VIP-приглашение</p>
+          <p class="ticket-no">Билет № 01<br />19 сентября · вручение</p>
+        </header>
+
+        <p class="kicker">Выставка одной картины</p>
+        <h1>Последний<br />сегмент</h1>
+        <p class="subtitle">Ольга, с 84-летием</p>
+        <div class="ornament" aria-hidden="true"></div>
+
+        <dl class="ticket-meta">
+          <div>
+            <dt>Именинница</dt>
+            <dd>Ольга</dd>
+          </div>
+          <div>
+            <dt>Юбилей</dt>
+            <dd>84 года</dd>
+          </div>
+          <div>
+            <dt>День рождения</dt>
+            <dd>8 сентября</dd>
+          </div>
+        </dl>
+
+        <div class="story">
+          <p>
+            Ольга, этот адрес пришёл вместе с VIP-билетом на вашу персональную выставку.
+            Гость на ней один — вы.
+          </p>
+          <p>
+            8 сентября вам исполнилось 84. Семья бережно разделила праздник:
+            сначала сам день рождения, а 19 сентября — вручение картины.
+          </p>
+          <p>
+            Полотно собирала вся семья, страза за стразой. Долгие вечера сложились
+            в работу, которая уже почти готова.
+          </p>
+          <p><em>Последний сегмент оставили вам.</em></p>
+          <p>
+            Пока вы его не соберёте, уже готовая часть картины останется под заклейкой.
+            Сначала прочувствовать руками весь путь сборки — хотя бы в этом финальном
+            фрагменте. А после увидеть аватар картины и представить, каким светом
+            она заиграет целиком, когда защитная плёнка сойдёт.
+          </p>
+        </div>
+
+        <div class="ticket-perf" aria-hidden="true"></div>
+
+        <div class="sealed">
+          <div class="canvas-preview" aria-hidden="true">
+            <div class="film"></div>
+          </div>
+          <p>
+            Полотно ждёт за плёнкой. Сейчас открыт только последний сегмент —
+            маленькая схема на 25 страз. Когда он будет собран, откроется эскиз.
+          </p>
+        </div>
+
+        <div class="actions">
+          <div class="gift-row" aria-hidden="true">
+            <div class="cake">
+              <i class="flame"></i>
+              <i class="candle"></i>
+              <i class="tier top"></i>
+              <i class="tier mid"></i>
+              <i class="tier base"></i>
+              <i class="plate"></i>
+            </div>
+            <p class="gift-dates">8 сентября · день рождения<br />19 сентября · этот вечер</p>
+          </div>
+          <a class="btn" id="startBtn" href="assemble.html">Начать сборку</a>
+          <a class="btn btn-ghost" id="hallLink" href="gallery.html" hidden>В зал картины</a>
+        </div>
+      </article>
+    </div>
+  </main>
+  <script>
+    if (localStorage.getItem("diamond-segment-complete") === "1") {
+      const hall = document.getElementById("hallLink");
+      const start = document.getElementById("startBtn");
+      hall.hidden = false;
+      start.textContent = "К схеме сегмента";
+    }
+  </script>
+  <script src="js/atmosphere.js"></script>
+</body>
+</html>

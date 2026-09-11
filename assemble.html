@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0a08" />
+  <title>Сборка · Последний сегмент</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-scene="assemble">
+  <div class="veil" id="veil" hidden>
+    <p>Плёнка сходит…</p>
+  </div>
+  <main class="page assemble-page">
+    <div class="assemble-shell">
+      <header class="assemble-head">
+        <p class="kicker">Персональная выставка</p>
+        <h1>Последний сегмент</h1>
+        <div class="ornament" aria-hidden="true"></div>
+        <p>
+          Ольга, каждая ячейка — как вечер, который семья вкладывала в эту работу
+          к вашим 84. Нажмите на клетку, чтобы положить или снять стразу.
+          Поля с крестиком к этому фрагменту не относятся.
+        </p>
+      </header>
+
+      <section class="board-card" aria-label="Схема сегмента">
+        <div class="legend">
+          <span class="swatch"><i class="s6"></i> 6 · чёрный</span>
+          <span class="swatch"><i class="s16"></i> 16 · бордо</span>
+          <span class="swatch"><i class="s25"></i> 25 · алый</span>
+        </div>
+        <div class="chart-wrap">
+          <div id="chart" class="chart" role="grid" aria-label="Схема 10 на 10, активны 25 ячеек"></div>
+        </div>
+      </section>
+
+      <footer class="assemble-footer">
+        <p id="progress" class="progress">Собрано: <span>0 / 25</span></p>
+        <p id="hint" class="hint">Коснитесь ячейки, чтобы положить стразу.</p>
+        <button class="btn is-disabled" id="finishBtn" type="button">Завершить сборку</button>
+      </footer>
+    </div>
+  </main>
+  <script src="js/atmosphere.js"></script>
+  <script src="js/assemble.js"></script>
+</body>
+</html>

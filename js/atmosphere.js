@@ -312,7 +312,7 @@
       b.style.setProperty("--balloon", color);
       b.style.setProperty("--drift", `${6 + (i % 5) * 2}s`);
       b.style.setProperty("--delay", `${-i * 1.4}s`);
-      b.style.setProperty("--x", side === "left" ? `${2 + (i % 4) * 4}vw` : `${2 + (i % 4) * 4}vw`);
+      b.style.setProperty("--x", side === "left" ? `${1 + (i % 3) * 2.2}vw` : `${1 + (i % 3) * 2.2}vw`);
       b.style.setProperty("--s", `${0.72 + (i % 3) * 0.12}`);
       layer.appendChild(b);
     }

@@ -124,6 +124,7 @@ function onCellTap(r, c, button) {
 
   if (isDouble) {
     lastTap = null;
+    toggleCell(r, c, button);
     clearPreviousInRow(r, c);
     return;
   }

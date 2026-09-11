@@ -735,21 +735,29 @@ body.is-complete .board-card {
 }
 
 .portrait-stage.is-crystal .portrait-mosaic {
-  animation: crystal-in 2.8s ease forwards;
+  animation: crystal-in 2.2s ease forwards;
 }
 
 .reveal .portrait {
-  animation: unveil 2.4s ease both;
+  animation: unveil 1.8s ease both;
 }
 
 @keyframes unveil {
-  from { opacity: 0.55; transform: scale(1.06); filter: blur(24px) brightness(0.55) saturate(0.65); }
-  to { opacity: 1; transform: scale(1); filter: contrast(1.02) saturate(1.04) blur(0); }
+  from {
+    opacity: 0.82;
+    transform: scale(1.03);
+    filter: blur(12px) brightness(0.9) saturate(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: contrast(1.02) saturate(1.04) blur(0);
+  }
 }
 
 @keyframes crystal-in {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to { opacity: 0.48; }
 }
 
 .caption {
@@ -768,6 +776,9 @@ body.is-complete .board-card {
   font-family: var(--serif);
   font-style: italic;
   color: var(--gold-bright);
+  font-size: 18px;
+  line-height: 1.55;
+  margin-top: 18px;
 }
 
 .party-canvas,
@@ -974,7 +985,7 @@ body[data-scene="assemble"] .balloon {
   }
 
   .portrait-stage.is-crystal .portrait-mosaic {
-    opacity: 1;
+    opacity: 0.4;
   }
 
   .btn,

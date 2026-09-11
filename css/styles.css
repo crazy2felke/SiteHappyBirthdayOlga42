@@ -776,9 +776,17 @@ body.is-complete .board-card {
   font-family: var(--serif);
   font-style: italic;
   color: var(--gold-bright);
-  font-size: 18px;
-  line-height: 1.55;
-  margin-top: 18px;
+  font-size: 19px;
+  line-height: 1.65;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(198, 163, 106, 0.35);
+}
+
+.sign-from {
+  display: block;
+  margin-top: 8px;
+  letter-spacing: 0.03em;
 }
 
 .party-canvas,
